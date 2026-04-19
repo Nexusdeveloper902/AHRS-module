@@ -1,0 +1,10 @@
+CompileFlags:
+  CompilationDatabase: "."
+  Add:
+    - "-isystem"
+    - "C:/Users/Usuario/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/7.3.0/include"
+    - "-isystem"
+    - "C:/Users/Usuario/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/7.3.0/include-fixed"
+    - "-isystem"
+    - "C:/Users/Usuario/.platformio/packages/toolchain-atmelavr/avr/include"
+  Remove: [-fno-fat-lto-objects, -mrelax, -flto]

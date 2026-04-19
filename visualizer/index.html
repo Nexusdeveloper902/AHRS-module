@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orion IMU — 3D Orientation Visualizer</title>
+  <meta name="description" content="Real-time 3D visualization of MPU6500 IMU orientation data via Web Serial API" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <!-- Three.js Canvas -->
+  <div id="canvas-container"></div>
+
+  <!-- Connection Panel — Top Left -->
+  <div id="connection-panel" class="glass-panel">
+    <div class="panel-header">
+      <div id="status-dot" class="status-dot disconnected"></div>
+      <span id="status-text" class="status-text">Disconnected</span>
+    </div>
+    <button id="connect-btn" class="btn-connect">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 19L3 19L3 16M3 8L3 5L6 5M18 5L21 5L21 8M21 16L21 19L18 19"></path>
+      </svg>
+      <span>Connect Serial</span>
+    </button>
+    <div id="port-info" class="port-info hidden">
+      <span id="port-name">—</span>
+      <span id="data-rate">0 Hz</span>
+    </div>
+  </div>
+
+  <!-- Orientation HUD — Top Right -->
+  <div id="orientation-panel" class="glass-panel">
+    <div class="panel-title">ORIENTATION</div>
+    <div class="gauge-row">
+      <div class="gauge" id="gauge-pitch">
+        <div class="gauge-label">PITCH</div>
+        <div class="gauge-bar-container">
+          <div class="gauge-bar" id="bar-pitch"></div>
+        </div>
+        <div class="gauge-value" id="val-pitch">0.0°</div>
+      </div>
+      <div class="gauge" id="gauge-roll">
+        <div class="gauge-label">ROLL</div>
+        <div class="gauge-bar-container">
+          <div class="gauge-bar" id="bar-roll"></div>
+        </div>
+        <div class="gauge-value" id="val-roll">0.0°</div>
+      </div>
+      <div class="gauge" id="gauge-yaw">
+        <div class="gauge-label">YAW</div>
+        <div class="gauge-bar-container">
+          <div class="gauge-bar" id="bar-yaw"></div>
+        </div>
+        <div class="gauge-value" id="val-yaw">0.0°</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Raw Data Terminal — Bottom -->
+  <div id="data-panel" class="glass-panel">
+    <div class="panel-title">SENSOR DATA</div>
+    <div class="data-grid">
+      <div class="data-group">
+        <div class="data-group-label">ACCELEROMETER (g)</div>
+        <div class="data-row">
+          <span class="data-axis x">X</span>
+          <span class="data-val" id="accel-x">0.0000</span>
+        </div>
+        <div class="data-row">
+          <span class="data-axis y">Y</span>
+          <span class="data-val" id="accel-y">0.0000</span>
+        </div>
+        <div class="data-row">
+          <span class="data-axis z">Z</span>
+          <span class="data-val" id="accel-z">0.0000</span>
+        </div>
+      </div>
+      <div class="data-group">
+        <div class="data-group-label">GYROSCOPE (°/s)</div>
+        <div class="data-row">
+          <span class="data-axis x">X</span>
+          <span class="data-val" id="gyro-x">0.0000</span>
+        </div>
+        <div class="data-row">
+          <span class="data-axis y">Y</span>
+          <span class="data-val" id="gyro-y">0.0000</span>
+        </div>
+        <div class="data-row">
+          <span class="data-axis z">Z</span>
+          <span class="data-val" id="gyro-z">0.0000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branding -->
+  <div id="branding">
+    <span class="brand-name">ORION</span>
+    <span class="brand-sub">IMU Visualizer</span>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

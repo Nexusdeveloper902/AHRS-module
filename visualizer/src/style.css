@@ -1,0 +1,378 @@
+/* ============================================
+   Orion IMU Visualizer — Design System
+   ============================================ */
+
+:root {
+  /* Color Palette */
+  --bg-deep: #06060f;
+  --bg-mid: #0c0c1d;
+  --bg-surface: #12122a;
+  --glass-bg: rgba(14, 14, 36, 0.72);
+  --glass-border: rgba(100, 120, 255, 0.12);
+  --glass-border-hover: rgba(100, 120, 255, 0.28);
+
+  --accent-primary: #6c8cff;
+  --accent-glow: rgba(108, 140, 255, 0.35);
+  --accent-secondary: #4af0c0;
+  --accent-warn: #ff6c6c;
+
+  --text-primary: #e8ecf4;
+  --text-secondary: #8a92a6;
+  --text-dim: #505872;
+  --text-mono: #4af0c0;
+
+  /* Axis colors */
+  --axis-x: #ff6c6c;
+  --axis-y: #4af0c0;
+  --axis-z: #6c8cff;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Spacing */
+  --panel-pad: 16px;
+  --panel-radius: 14px;
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-deep);
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   Canvas
+   ============================================ */
+
+#canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+#canvas-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ============================================
+   Glass Panel Base
+   ============================================ */
+
+.glass-panel {
+  position: fixed;
+  z-index: 10;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--panel-radius);
+  padding: var(--panel-pad);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow:
+    0 4px 40px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.panel-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* ============================================
+   Connection Panel — Top Left
+   ============================================ */
+
+#connection-panel {
+  top: 20px;
+  left: 20px;
+  min-width: 200px;
+}
+
+/* Status Dot */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.status-dot.disconnected {
+  background: var(--axis-x);
+  box-shadow: 0 0 8px rgba(255, 108, 108, 0.5);
+  animation: pulse-red 2s infinite;
+}
+
+.status-dot.connected {
+  background: var(--accent-secondary);
+  box-shadow: 0 0 8px rgba(74, 240, 192, 0.5);
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 6px rgba(255, 108, 108, 0.4); }
+  50% { box-shadow: 0 0 14px rgba(255, 108, 108, 0.7); }
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 6px rgba(74, 240, 192, 0.4); }
+  50% { box-shadow: 0 0 14px rgba(74, 240, 192, 0.7); }
+}
+
+.status-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Connect Button */
+.btn-connect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(108, 140, 255, 0.15), rgba(108, 140, 255, 0.05));
+  border: 1px solid rgba(108, 140, 255, 0.25);
+  border-radius: 10px;
+  color: var(--accent-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-connect:hover {
+  background: linear-gradient(135deg, rgba(108, 140, 255, 0.25), rgba(108, 140, 255, 0.10));
+  border-color: rgba(108, 140, 255, 0.45);
+  box-shadow: 0 0 20px rgba(108, 140, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-connect:active {
+  transform: translateY(0px);
+}
+
+.btn-connect.disconnect {
+  background: linear-gradient(135deg, rgba(255, 108, 108, 0.15), rgba(255, 108, 108, 0.05));
+  border-color: rgba(255, 108, 108, 0.25);
+  color: var(--axis-x);
+}
+
+.btn-connect.disconnect:hover {
+  background: linear-gradient(135deg, rgba(255, 108, 108, 0.25), rgba(255, 108, 108, 0.10));
+  border-color: rgba(255, 108, 108, 0.45);
+  box-shadow: 0 0 20px rgba(255, 108, 108, 0.2);
+}
+
+.port-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.port-info.hidden {
+  display: none;
+}
+
+/* ============================================
+   Orientation Panel — Top Right
+   ============================================ */
+
+#orientation-panel {
+  top: 20px;
+  right: 20px;
+  min-width: 240px;
+}
+
+.gauge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gauge {
+  display: grid;
+  grid-template-columns: 48px 1fr 60px;
+  align-items: center;
+  gap: 8px;
+}
+
+.gauge-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+}
+
+.gauge-bar-container {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gauge-bar {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.15s ease, left 0.15s ease, background 0.3s ease;
+  min-width: 2px;
+}
+
+#gauge-pitch .gauge-bar { background: var(--axis-x); box-shadow: 0 0 8px rgba(255, 108, 108, 0.4); }
+#gauge-roll .gauge-bar { background: var(--axis-y); box-shadow: 0 0 8px rgba(74, 240, 192, 0.4); }
+#gauge-yaw .gauge-bar { background: var(--axis-z); box-shadow: 0 0 8px rgba(108, 140, 255, 0.4); }
+
+.gauge-value {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* ============================================
+   Data Panel — Bottom
+   ============================================ */
+
+#data-panel {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 420px;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.data-group-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.data-axis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.data-axis.x { background: rgba(255, 108, 108, 0.15); color: var(--axis-x); }
+.data-axis.y { background: rgba(74, 240, 192, 0.15); color: var(--axis-y); }
+.data-axis.z { background: rgba(108, 140, 255, 0.15); color: var(--axis-z); }
+
+.data-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-mono);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   Branding — Bottom Right
+   ============================================ */
+
+#branding {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: var(--accent-primary);
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.glass-panel {
+  animation: fade-in 0.6s ease both;
+}
+
+#connection-panel { animation-delay: 0.1s; }
+#orientation-panel { animation-delay: 0.2s; }
+#data-panel { animation-delay: 0.3s; }
+#branding { animation: fade-in 0.6s 0.4s ease both; }
